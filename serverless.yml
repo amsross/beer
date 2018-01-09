@@ -1,0 +1,88 @@
+service: beer
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: ${opt:stage, 'dev'}
+  environment:
+    SERVICE: ${self:service}
+    STAGE: ${self:provider.stage}
+  iamRoleStatements:
+    -  Effect: "Allow"
+       Action:
+         - "dynamodb:Query"
+         - "dynamodb:Scan"
+         - "dynamodb:GetItem"
+         - "dynamodb:PutItem"
+         - "dynamodb:UpdateItem"
+         - "dynamodb:DeleteItem"
+       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:service}-${self:provider.stage}-beer"
+    -  Effect: "Allow"
+       Action:
+         - "s3:ListBucket"
+       Resource:
+         Fn::Join:
+           - ""
+           - - "arn:aws:s3:::"
+             - Ref: ServerlessDeploymentBucket
+    -  Effect: "Allow"
+       Action:
+         - "s3:PutObject"
+       Resource:
+         Fn::Join:
+           - ""
+           - - "arn:aws:s3:::"
+             - Ref: ServerlessDeploymentBucket
+             - "/*"
+
+resources:
+  Resources:
+    DynamoDBTableBeer:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-beer
+        AttributeDefinitions:
+          - AttributeName: Key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+plugins:
+  - serverless-offline
+  - serverless-domain-manager
+  - serverless-prune-plugin
+
+custom:
+  customDomain:
+    domainName: ${env:DOMAIN}
+    basePath: ${self:provider.stage}
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+  prune:
+    automatic: true
+    number: 2
+
+functions:
+  help:
+    handler: handler.handler
+    events:
+      - http:
+          path: help
+          method: get
+          cors: true
+      - http:
+          path: add
+          method: post
+          cors: true
+      - http:
+          path: list
+          method: get
+          cors: true
+      - http:
+          path: remove
+          method: post
+          cors: true
