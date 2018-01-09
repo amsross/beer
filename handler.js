@@ -37,7 +37,7 @@ app.post('/:stage?/add', ({ body: { text, team_id, user_id } }, res) => dbPut(db
 })
   .toCallback((err, data) => res.json({
     response_type: 'in_channel',
-    text: err || data
+    text: (err && err.message) || data
   })))
 
 app.get('/:stage?/list', ({ query: { team_id, user_id } }, res) => dbScan(db)({
@@ -47,7 +47,7 @@ app.get('/:stage?/list', ({ query: { team_id, user_id } }, res) => dbScan(db)({
   .collect()
   .toCallback((err, beers) => res.json({
     response_type: 'in_channel',
-    text: err.message || 'here are your beers:',
+    text: (err && err.message) || 'here are your beers:',
     attachments: (beers || [])
   })))
 
