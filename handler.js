@@ -3,7 +3,7 @@ const serverless = require('serverless-http')
 const bodyParser = require('body-parser')
 const express = require('express')
 const AWS = require('aws-sdk')
-const { dbPut, dbScan } = require('./utils')
+const { dbPut, dbScan, dbDelete } = require('./utils')
 
 const app = express()
 app.use((req, res, next) => {
@@ -50,6 +50,16 @@ app.get('/:stage?/list', ({ query: { team_id, user_id } }, res) => dbScan(db)({
     response_type: 'in_channel',
     text: (err && err.message) || 'here are your beers:',
     attachments: (beers || [])
+  })))
+
+app.post('/:stage?/remove', ({ body: { text, team_id, user_id } }, res) => dbDelete(db)({
+  Name: text,
+  TeamID: team_id,
+  UserID: user_id
+})
+  .toCallback((err, data) => res.json({
+    response_type: 'in_channel',
+    text: (err && err.message) || data
   })))
 
 module.exports.handler = serverless(app)

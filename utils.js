@@ -36,7 +36,26 @@ const dbScan = db => ({ TeamID, UserID }) =>
     .map(({ Name }) => Name)
     .otherwise(h.fromError(new Error('no items found')))
 
+// get multiple documents back from the db
+const dbDelete = db => ({ Name, TeamID, UserID }) =>
+  h.of({ TableName, Name, TeamID })
+    .filter(allPass(map(prop, [
+      'TableName', 'Name', 'TeamID'
+    ])))
+    .map(({ TableName, Name, TeamID }) => ({
+      TableName,
+      Key: { Name }
+    }))
+    .filter(allPass(map(prop, [
+      'TableName', 'Key'
+    ])))
+    .otherwise(h.fromError(new Error('incomplete db.delete params')))
+    .flatMap(h.wrapCallback((params, cb) => db.delete(params, cb)))
+    .map(() => `Removed ${Name} from the list`)
+    .otherwise(h.fromError(new Error('no items removed')))
+
 module.exports = {
   dbPut,
-  dbScan
+  dbScan,
+  dbDelete
 }
