@@ -7,17 +7,17 @@ order beeee33eeeR
 
 1. Install project dependencies
 
-    nvm install
-    npm install
+        nvm install
+        npm install
 
 2. Start the server
 
-    npm start
+        npm start
 
 4. Do work...
 
 5. Test / Build / Deploy
 
-    git add <filenames>
-    git commit
-    git push origin master
+        git add <filenames>
+        git commit
+        git push origin master
