@@ -45,7 +45,7 @@ const dbDelete = db => ({ Name, TeamID, UserID }) =>
       TableName,
       Key: { Name },
       ConditionExpression: 'TeamID = :TeamID',
-      ExpressionAttributeValues: { ':TeamID' : TeamID }
+      ExpressionAttributeValues: { ':TeamID': TeamID }
     }))
     .filter(allPass(map(prop, [
       'TableName', 'Key', 'ConditionExpression', 'ExpressionAttributeValues'
