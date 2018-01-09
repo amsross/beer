@@ -3,7 +3,7 @@ const serverless = require('serverless-http')
 const bodyParser = require('body-parser')
 const express = require('express')
 const AWS = require('aws-sdk')
-const { dbPut, dbScan } = require('./utils')('beer')
+const { dbPut, dbScan } = require('./utils')
 
 const app = express()
 app.use((req, res, next) => {
@@ -25,6 +25,8 @@ app.get('/:stage?/help', (req, res) => res.json({
     'text': '`beer:list`: List the beers in the list'
   }, {
     'text': '`beer:add [beer name]`: Add a beer to the list'
+  }, {
+    'text': '`beer:remove [beer name]`: Remove a beer from the list'
   }]
 }))
 

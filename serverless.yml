@@ -16,7 +16,7 @@ provider:
          - "dynamodb:PutItem"
          - "dynamodb:UpdateItem"
          - "dynamodb:DeleteItem"
-       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:service}-${self:provider.stage}-beer"
+       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:service}-${self:provider.stage}"
     -  Effect: "Allow"
        Action:
          - "s3:ListBucket"
@@ -40,12 +40,12 @@ resources:
     DynamoDBTableBeer:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:service}-${self:provider.stage}-beer
+        TableName: ${self:service}-${self:provider.stage}
         AttributeDefinitions:
-          - AttributeName: Key
+          - AttributeName: Name
             AttributeType: S
         KeySchema:
-          - AttributeName: Key
+          - AttributeName: Name
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -67,7 +67,7 @@ custom:
     number: 2
 
 functions:
-  help:
+  beer:
     handler: handler.handler
     events:
       - http:
