@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "start": "AWS_REGION=us-east-1 sls offline start --stage dev",
-    "deploy": "sls create_domain && sls deploy -v --stage prod",
+    "deploy": "sls create_domain && sls deploy -v",
     "pretest": "standard",
     "test": "exit 0"
   },
