@@ -22,11 +22,14 @@ app.get('/:stage?/help', (req, res) => res.json({
   response_type: 'in_channel',
   text: 'Try these commands:',
   attachments: [{
-    'text': '`beer:list`: List the beers in the list'
+    'text': '`beer:list`: List the beers in the list',
+    'mrkdwn_in': ['text']
   }, {
-    'text': '`beer:add [beer name]`: Add a beer to the list'
+    'text': '`beer:add [beer name]`: Add a beer to the list',
+    'mrkdwn_in': ['text']
   }, {
-    'text': '`beer:remove [beer name]`: Remove a beer from the list'
+    'text': '`beer:remove [beer name]`: Remove a beer from the list',
+    'mrkdwn_in': ['text']
   }]
 }))
 
