@@ -83,6 +83,10 @@ functions:
           method: get
           cors: true
       - http:
+          path: vote
+          method: post
+          cors: true
+      - http:
           path: remove
           method: post
           cors: true

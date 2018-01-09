@@ -4,10 +4,10 @@ const { allPass, map, prop } = require('ramda')
 const TableName = `${process.env.SERVICE}-${process.env.STAGE}`
 
 // put a document into the db
-const dbPut = db => ({ Name, TeamID }) =>
-  h.of({ Name, TeamID })
+const dbPut = db => ({ Name, TeamID, UserID }) =>
+  h.of({ Name, TeamID, Votes: db.createSet([UserID]) })
     .filter(allPass(map(prop, [
-      'Name', 'TeamID'
+      'Name', 'TeamID', 'Votes'
     ])))
     .otherwise(h.fromError(new Error('incomplete db.put params')))
     .map(Item => ({ TableName, Item }))
@@ -33,10 +33,9 @@ const dbScan = db => ({ TeamID, UserID }) =>
     .otherwise(h.fromError(new Error('incomplete db.scan params')))
     .flatMap(h.wrapCallback((params, cb) => db.scan(params, cb)))
     .flatMap(x => x && x.Items)
-    .map(({ Name }) => Name)
     .otherwise(h.fromError(new Error('no items found')))
 
-// get multiple documents back from the db
+// delete one document from the db
 const dbDelete = db => ({ Name, TeamID, UserID }) =>
   h.of({ TableName, Name, TeamID })
     .filter(allPass(map(prop, [
@@ -44,18 +43,49 @@ const dbDelete = db => ({ Name, TeamID, UserID }) =>
     ])))
     .map(({ TableName, Name, TeamID }) => ({
       TableName,
-      Key: { Name }
+      Key: { Name },
+      ConditionExpression: 'TeamID = :TeamID',
+      ExpressionAttributeValues: { ':TeamID' : TeamID }
     }))
     .filter(allPass(map(prop, [
-      'TableName', 'Key'
+      'TableName', 'Key', 'ConditionExpression', 'ExpressionAttributeValues'
     ])))
     .otherwise(h.fromError(new Error('incomplete db.delete params')))
     .flatMap(h.wrapCallback((params, cb) => db.delete(params, cb)))
     .map(() => `Removed ${Name} from the list`)
     .otherwise(h.fromError(new Error('no items removed')))
 
+// update one document in the db
+const dbUpdate = db => ({ Name, TeamID, UserID }) =>
+  h.of({ TableName, Name, TeamID, UserID })
+    .filter(allPass(map(prop, [
+      'TableName', 'Name', 'TeamID', 'UserID'
+    ])))
+    .map(({ TableName, Name, TeamID, UserID }) => ({
+      TableName,
+      Key: { Name },
+      UpdateExpression: 'ADD #Votes :UserID',
+      ConditionExpression: '#TeamID = :TeamID',
+      ExpressionAttributeNames: {
+        '#TeamID': 'TeamID',
+        '#Votes': 'Votes'
+      },
+      ExpressionAttributeValues: {
+        ':TeamID': TeamID,
+        ':UserID': db.createSet([UserID])
+      }
+    }))
+    .filter(allPass(map(prop, [
+      'TableName', 'Key', 'UpdateExpression', 'ConditionExpression', 'ExpressionAttributeNames', 'ExpressionAttributeValues'
+    ])))
+    .otherwise(h.fromError(new Error('incomplete db.update params')))
+    .flatMap(h.wrapCallback((params, cb) => db.update(params, cb)))
+    .map(() => `Added vote to ${Name} for ${UserID}`)
+    .otherwise(h.fromError(new Error('no items updated')))
+
 module.exports = {
   dbPut,
   dbScan,
+  dbUpdate,
   dbDelete
 }
