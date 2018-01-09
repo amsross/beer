@@ -44,6 +44,7 @@ app.get('/:stage?/list', ({ query: { team_id, user_id } }, res) => dbScan(db)({
   TeamID: team_id,
   UserID: user_id
 })
+  .sort()
   .collect()
   .toCallback((err, beers) => res.json({
     response_type: 'in_channel',
