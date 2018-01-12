@@ -1,6 +1,8 @@
 [beer](https://beer.mattross.io/prod/) [![Build Status](https://travis-ci.org/amsross/beer.svg?branch=master)](https://travis-ci.org/amsross/beer)
 ======================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/amsross/beer.svg)](https://greenkeeper.io/)
+
 order beeee33eeeR
 
 ## Development Workflow
