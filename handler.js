@@ -3,7 +3,7 @@ const serverless = require('serverless-http')
 const bodyParser = require('body-parser')
 const express = require('express')
 const AWS = require('aws-sdk')
-const { dbPut, dbScan, dbUpdate, dbDelete, dbPurge }= require('./utils')
+const { dbPut, dbScan, dbUpdate, dbDelete, dbPurge } = require('./utils')
 
 const app = express()
 app.use((req, res, next) => {
@@ -84,7 +84,7 @@ app.post('/:stage?/remove', ({ body: { text, team_id, user_id } }, res) => dbDel
   })))
 
 app.post('/:stage?/purge', ({ body: { team_id } }, res) => dbPurge(db)({
-  TeamID: team_id,
+  TeamID: team_id
 })
   .toCallback((err, data) => res.json({
     response_type: 'in_channel',

@@ -119,5 +119,6 @@ module.exports = {
   dbPut,
   dbScan,
   dbUpdate,
-  dbDelete
+  dbDelete,
+  dbPurge
 }
