@@ -102,7 +102,7 @@ const dbPurge = db => ({ TeamID }) =>
           '#Votes': 'Votes'
         },
         ExpressionAttributeValues: {
-          ':TeamID': TeamID,
+          ':TeamID': TeamID
         }
       }))
       .filter(allPass(map(prop, [
