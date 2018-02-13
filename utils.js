@@ -16,7 +16,7 @@ const dbPut = db => ({ Name, TeamID, UserID }) =>
     .otherwise(h.fromError(new Error('no items created')))
 
 // get multiple documents back from the db
-const dbScan = db => ({ TeamID, UserID }) =>
+const dbScan = db => ({ TeamID }) =>
   h.of({ TableName, TeamID })
     .filter(allPass(map(prop, [
       'TableName', 'TeamID'
@@ -82,6 +82,38 @@ const dbUpdate = db => ({ Name, TeamID, UserID }) =>
     .flatMap(h.wrapCallback((params, cb) => db.update(params, cb)))
     .map(() => `Added vote to ${Name} for ${UserID}`)
     .otherwise(h.fromError(new Error('no items updated')))
+
+// remove all votes from a beer
+const dbPurge = db => ({ TeamID }) =>
+  // get all the beers
+  dbScan(db)({ TeamID })
+    // set each beer's Votes to an empty set
+    .map(({ Name }) => h.of({ TableName, Name, TeamID })
+      .filter(allPass(map(prop, [
+        'TableName', 'TeamID', 'Name'
+      ])))
+      .map(({ TableName, TeamID }) => ({
+        TableName,
+        Key: { Name },
+        UpdateExpression: 'SET #Votes :EmptySet',
+        ConditionExpression: '#TeamID = :TeamID',
+        ExpressionAttributeNames: {
+          '#TeamID': 'TeamID',
+          '#Votes': 'Votes'
+        },
+        ExpressionAttributeValues: {
+          ':TeamID': TeamID,
+          ':EmptySet': db.createSet([])
+        }
+      }))
+      .filter(allPass(map(prop, [
+        'TableName', 'Key', 'UpdateExpression', 'ConditionExpression', 'ExpressionAttributeNames', 'ExpressionAttributeValues'
+      ])))
+      .otherwise(h.fromError(new Error(`incomplete db.update params for ${Name}`)))
+      .flatMap(h.wrapCallback((params, cb) => db.update(params, cb))))
+    .merge()
+    .map(() => `Removed all votes for all beers`)
+    .otherwise(h.fromError(new Error('no votes removed')))
 
 module.exports = {
   dbPut,
