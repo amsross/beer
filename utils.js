@@ -95,7 +95,7 @@ const dbPurge = db => ({ TeamID }) =>
       .map(({ TableName, TeamID }) => ({
         TableName,
         Key: { Name },
-        UpdateExpression: 'SET #Votes :EmptySet',
+        UpdateExpression: 'REMOVE #Votes',
         ConditionExpression: '#TeamID = :TeamID',
         ExpressionAttributeNames: {
           '#TeamID': 'TeamID',
@@ -103,7 +103,6 @@ const dbPurge = db => ({ TeamID }) =>
         },
         ExpressionAttributeValues: {
           ':TeamID': TeamID,
-          ':EmptySet': db.createSet([])
         }
       }))
       .filter(allPass(map(prop, [
@@ -112,6 +111,7 @@ const dbPurge = db => ({ TeamID }) =>
       .otherwise(h.fromError(new Error(`incomplete db.update params for ${Name}`)))
       .flatMap(h.wrapCallback((params, cb) => db.update(params, cb))))
     .merge()
+    .collect()
     .map(() => `Removed all votes for all beers`)
     .otherwise(h.fromError(new Error('no votes removed')))
 
