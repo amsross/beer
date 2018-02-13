@@ -90,3 +90,7 @@ functions:
           path: remove
           method: post
           cors: true
+      - http:
+          path: purge
+          method: post
+          cors: true
