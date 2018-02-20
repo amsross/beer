@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.179.0",
-    "axios": "^0.17.1",
+    "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "highland": "^2.11.1",
