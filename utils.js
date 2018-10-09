@@ -25,7 +25,7 @@ const dbScan = db => ({ TeamID }) =>
       TableName,
       Select: 'ALL_ATTRIBUTES',
       FilterExpression: 'TeamID = :TeamID',
-      ExpressionAttributeValues: {':TeamID': TeamID}
+      ExpressionAttributeValues: { ':TeamID': TeamID }
     }))
     .filter(allPass(map(prop, [
       'TableName', 'Select', 'FilterExpression', 'ExpressionAttributeValues'
