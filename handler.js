@@ -39,29 +39,29 @@ app.get('/:stage?/help', (req, res) => res.json({
   }]
 }))
 
-app.post('/:stage?/add', ({ body: { text, team_id, user_id } }, res) => dbPut(db)({
-  Name: text,
-  TeamID: team_id,
-  UserID: user_id
+app.post('/:stage?/add', ({ body: { text: Name, team_id: TeamID, user_id: UserID } }, res) => dbPut(db)({
+  Name,
+  TeamID,
+  UserID
 })
   .toCallback((err, data) => res.json({
     response_type: 'in_channel',
     text: (err && err.message) || data
   })))
 
-app.post('/:stage?/vote', ({ body: { text, team_id, user_id } }, res) => dbUpdate(db)({
-  Name: text,
-  TeamID: team_id,
-  UserID: user_id
+app.post('/:stage?/vote', ({ body: { text: Name, team_id: TeamID, user_id: UserID } }, res) => dbUpdate(db)({
+  Name,
+  TeamID,
+  UserID
 })
   .toCallback((err, data) => res.json({
     response_type: 'in_channel',
     text: (err && err.message) || data
   })))
 
-app.get('/:stage?/list', ({ query: { team_id, user_id } }, res) => dbScan(db)({
-  TeamID: team_id,
-  UserID: user_id
+app.get('/:stage?/list', ({ query: { team_id: TeamID, user_id: UserID } }, res) => dbScan(db)({
+  TeamID,
+  UserID
 })
   .map(({ Name, Votes }) => ({ Name, Votes: ((Votes || {}).values || []).length }))
   .sortBy((a, b) => b.Votes - a.Votes)
@@ -73,18 +73,18 @@ app.get('/:stage?/list', ({ query: { team_id, user_id } }, res) => dbScan(db)({
     attachments: (beers || [])
   })))
 
-app.post('/:stage?/remove', ({ body: { text, team_id, user_id } }, res) => dbDelete(db)({
-  Name: text,
-  TeamID: team_id,
-  UserID: user_id
+app.post('/:stage?/remove', ({ body: { text: Name, team_id: TeamID, user_id: UserID } }, res) => dbDelete(db)({
+  Name,
+  TeamID,
+  UserID
 })
   .toCallback((err, data) => res.json({
     response_type: 'in_channel',
     text: (err && err.message) || data
   })))
 
-app.post('/:stage?/purge', ({ body: { team_id } }, res) => dbPurge(db)({
-  TeamID: team_id
+app.post('/:stage?/purge', ({ body: { team_id: TeamID } }, res) => dbPurge(db)({
+  TeamID
 })
   .toCallback((err, data) => res.json({
     response_type: 'in_channel',
