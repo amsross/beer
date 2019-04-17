@@ -27,6 +27,6 @@
     "express": "^4.16.4",
     "highland": "^2.13.3",
     "ramda": "^0.26.1",
-    "serverless-http": "^1.9.1"
+    "serverless-http": "^2.0.0"
   }
 }
