@@ -7,7 +7,9 @@
     "start": "AWS_REGION=us-east-1 sls offline start --stage dev",
     "deploy": "sls create_domain && sls deploy -v",
     "pretest": "standard",
-    "test": "exit 0"
+    "test": "exit 0",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +29,8 @@
     "express": "^4.16.4",
     "highland": "^2.13.3",
     "ramda": "^0.26.1",
-    "serverless-http": "^2.0.0"
-  }
+    "serverless-http": "^2.0.0",
+    "snyk": "^1.161.1"
+  },
+  "snyk": true
 }
