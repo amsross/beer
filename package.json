@@ -26,7 +26,7 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "highland": "^2.13.3",
-    "ramda": "^0.26.1",
+    "ramda": "^0.27.0",
     "serverless-http": "^2.0.0"
   }
 }
