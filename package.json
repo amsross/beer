@@ -22,9 +22,9 @@
   },
   "dependencies": {
     "aws-sdk": "^2.421.0",
-    "axios": "^1.8.2",
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
+    "axios": "^1.13.5",
+    "body-parser": "^1.20.4",
+    "express": "^4.22.0",
     "highland": "^2.13.3",
     "ramda": "^0.27.2",
     "serverless-http": "^2.0.0"
